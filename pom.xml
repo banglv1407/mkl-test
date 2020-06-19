@@ -46,7 +46,24 @@
 			<artifactId>firebase-admin</artifactId>
 			<version>6.14.0</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>5.1.6.RELEASE</version>
+		</dependency>
+   		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.4.1</version>
+		</dependency>
+<!--  
+   <dependency>
+     <groupId>org.springframework.security</groupId>
+     <artifactId>spring-security-config</artifactId>
+     <version>5.1.6.RELEASE</version>
+   </dependency> -->
+ </dependencies>
 
 	<build>
 		<plugins>
