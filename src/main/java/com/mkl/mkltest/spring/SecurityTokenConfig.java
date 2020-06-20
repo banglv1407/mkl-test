@@ -13,9 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity // Enable security config. This annotation denotes config for spring security.
 public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 
-	public static String TOKEN_NAME = "MKL-ACCESS-KEY";
+	public static String TOKEN_NAME = "AV-ACCESS-KEY";
 	public static String TOKEN_SECRET = "avissomethingveryseret";
-	public static String TOKEN_ISSUER = "mkl";
+	public static String TOKEN_ISSUER = "anvui";
 	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 1000;
 
 	@Bean

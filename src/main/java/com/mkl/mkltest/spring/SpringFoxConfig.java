@@ -27,7 +27,7 @@ public class SpringFoxConfig {
 
         return new ApiInfoBuilder().title("Anvui 20 REST API")
                 .description("Transport Management REST API")
-                .contact(new Contact("Le Bang", "banglv", "july147791@gmail.com"))
+                .contact(new Contact("Bui Dinh Ngoc", "anvui.vn", "buidinhngoc.aiti@gmail.com"))
                 .license("Apache 2.0")
                 .termsOfServiceUrl("#")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
-import com.mkl.mkltest.enumMkl.Permission;
+import com.mkl.mkltest.enums.Permission;
 
 public class AuthorityCryptor {
 	public static List<String> decodeFromHex(String tokenAuthority) {

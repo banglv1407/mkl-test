@@ -1,4 +1,4 @@
-// package com.mkl.mkltest.spring;
+// package vn.anvui.spring;
 
 // import org.springframework.boot.builder.SpringApplicationBuilder;
 // import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
