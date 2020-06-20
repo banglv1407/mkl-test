@@ -38,6 +38,14 @@ public class AuthorityCryptor {
 		// to bit
 		return bi.toString(16);
 	}
+
+	public static String encodeToHex(int b) {
+		BitSet bits = new BitSet(b);
+		bits.set(b);
+		BigInteger bi = new BigInteger(bits.toByteArray());
+		// to bit
+		return bi.toString(16);
+	}
 	
 	
 }

@@ -30,7 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 
 import io.swagger.annotations.ApiOperation;
-import com.mkl.mkltest.controller.api.UserLogin.UserLoginRequest;
+import com.mkl.mkltest.controller.api.UserLogin;
 import com.mkl.mkltest.controller.api.UserRegister;
 import com.mkl.mkltest.entity.User;
 import com.mkl.mkltest.spring.FirebaseAppConfig;
@@ -87,20 +87,27 @@ public class UserController {
 		db.getFirebase().document("User/" + user.getUserName()).set(user); // asynchronous => it may be fail to insert 
 		return "OK";
 	}
-    // @PostMapping(value = "/login")
-	// public String login(@RequestBody UserLoginRequest userLoginRequest) throws InterruptedException, ExecutionException {
+    @PostMapping(value = "/login")
+	@ApiOperation(value = "Login", response = String.class)
+	public String login(@RequestBody UserLogin userLoginRequest) throws InterruptedException, ExecutionException {
 		
-	// 	User user = db.getFirebase().document("User/" + userLoginRequest.getUserName()).get().get().toObject(User.class);
-    //     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-	// 	if (!passwordEncoder.matches(userLoginRequest.getPassword(), user.getPassword())) {
-	// 		throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Wrong password !!");
-	// 	}
-	
-	// 	Algorithm algorithm = Algorithm.HMAC256("AV-ACCESS-KEY");
-	// 	String token = JWT.create().withJWTId(user.getId().toString()).withIssuer("avissomethingveryseret")
-	// 			.withAudience(userLoginRequest.getUserName())//, AuthorityCryptor.encodeToHex(permissions)
-	// 			.sign(algorithm);
+		User user = db.getFirebase().collection("User")
+								.document(userLoginRequest.getUserLogin())
+								.get().get().toObject(User.class);
 		
-	// 	return token;
-	// }
+		if (user == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, userLoginRequest.getUserLogin() + " not exists");
+		}
+		
+		if (!bCryptPasswordEncoder.matches(userLoginRequest.getPassword(), user.getPassword())) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Wrong password !!");
+		}
+ 		Algorithm algorithm = Algorithm.HMAC256(SecurityTokenConfig.TOKEN_SECRET);
+		String token = JWT.create().withJWTId(user.getId().toString()).withIssuer(SecurityTokenConfig.TOKEN_ISSUER)
+				.withAudience(userLoginRequest.getUserLogin(), AuthorityCryptor.encodeToHex(Integer.parseInt(user.getBirthYear())))
+				.sign(algorithm);
+		
+		return token;
+	}
+
 }
