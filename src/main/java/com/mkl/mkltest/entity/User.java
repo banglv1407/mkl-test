@@ -3,10 +3,17 @@ package com.mkl.mkltest.entity;
 public class User {
     private String id;
     private String fullName;
-    private String phone;
-    private String birthYear;
+    private String phoneNumber;
     private String userName;
     private String password;
+    private String bankAccountNumber;
+    private String bankCode;
+    private long birthDay;
+    private int birthDayInt;
+    private String zalo;
+    private int rice;
+    private String secretWord;
+    private boolean isActive;
     public String getId() {
         return id;
     }
@@ -23,22 +30,6 @@ public class User {
         this.fullName = fullName;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getBirthYear() {
-        return birthYear;
-    }
-
-    public void setBirthYear(String birthYear) {
-        this.birthYear = birthYear;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -53,5 +44,77 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getBankAccountNumber() {
+        return bankAccountNumber;
+    }
+
+    public void setBankAccountNumber(String bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
+    }
+
+    public long getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(long birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public String getZalo() {
+        return zalo;
+    }
+
+    public void setZalo(String zalo) {
+        this.zalo = zalo;
+    }
+
+    public String getBankCode() {
+        return bankCode;
+    }
+
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
+    }
+
+    public int getBirthDayInt() {
+        return birthDayInt;
+    }
+
+    public void setBirthDayInt(int birthDayInt) {
+        this.birthDayInt = birthDayInt;
+    }
+
+    public int getRice() {
+        return rice;
+    }
+
+    public void setRice(int rice) {
+        this.rice = rice;
+    }
+
+    public String getSecretWord() {
+        return secretWord;
+    }
+
+    public void setSecretWord(String secretWord) {
+        this.secretWord = secretWord;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }

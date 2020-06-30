@@ -15,7 +15,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
 
 	public static String TOKEN_NAME = "AV-ACCESS-KEY";
 	public static String TOKEN_SECRET = "avissomethingveryseret";
-	public static String TOKEN_ISSUER = "anvui";
+	public static String TOKEN_ISSUER = "mkl";
 	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 1000;
 
 	@Bean

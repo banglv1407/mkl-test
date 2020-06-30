@@ -7,10 +7,16 @@ public class UserRegister {
 		private String userName;
 		@NotBlank(message = "password can not blank")
         private String password;
-        private String phone;
-        private String birthYear;
+        @NotBlank(message = "phoneNumber can not blank")
+        private String phoneNumber;
+        @NotBlank(message = "bankAccountNumber can not blank")
+        private String bankAccountNumber;
+        private String bankCode;
+        private Long birthDay;
         private String fullName;
-
+        private String zalo;
+        @NotBlank(message = "secretWord can not blank")
+        private String secretWord;
 
 		public String getPassword() {
 			return password;
@@ -28,28 +34,60 @@ public class UserRegister {
             this.userName = userName;
         }
 
-        public String getBirthYear() {
-            return birthYear;
-        }
-
-        public void setBirthYear(String birthYear) {
-            this.birthYear = birthYear;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-
         public String getFullName() {
             return fullName;
         }
 
         public void setFullName(String fullName) {
             this.fullName = fullName;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+
+        public String getBankAccountNumber() {
+            return bankAccountNumber;
+        }
+
+        public void setBankAccountNumber(String bankAccountNumber) {
+            this.bankAccountNumber = bankAccountNumber;
+        }
+
+        public String getZalo() {
+            return zalo;
+        }
+
+        public void setZalo(String zalo) {
+            this.zalo = zalo;
+        }
+
+        public Long getBirthDay() {
+            return birthDay;
+        }
+
+        public void setBirthDay(Long birthDay) {
+            this.birthDay = birthDay;
+        }
+
+        public String getBankCode() {
+            return bankCode;
+        }
+
+        public void setBankCode(String bankCode) {
+            this.bankCode = bankCode;
+        }
+
+        public String getSecretWord() {
+            return secretWord;
+        }
+
+        public void setSecretWord(String secretWord) {
+            this.secretWord = secretWord;
         }
 
 	

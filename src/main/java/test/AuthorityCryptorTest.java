@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import vn.anvui.enums.Permission;
-import vn.anvui.utility.AuthorityCryptor;
+import com.mkl.mkltest.enums.Permission;
+import com.mkl.mkltest.utility.AuthorityCryptor;
 
 public class AuthorityCryptorTest {
 	
