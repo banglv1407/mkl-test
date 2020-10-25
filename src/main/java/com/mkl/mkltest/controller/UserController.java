@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,7 @@ import com.mkl.mkltest.utility.AuthorityCryptor;
 import com.mkl.mkltest.utility.CommonMethod;
 import com.mkl.mkltest.utility.UtilitiesMethod;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = "/user") 
 public class UserController {
@@ -69,8 +71,11 @@ public class UserController {
 		return user;
     }
 	@PostMapping(value = "/register")
-	public String register(@RequestBody UserRegister userRegisterRequest) throws InterruptedException, ExecutionException {
-		User user = db.getFirebase().document("Users/" + userRegisterRequest.getUserName()).get().get().toObject(User.class);
+	public User register(@RequestBody UserRegister userRegisterRequest) throws InterruptedException, ExecutionException {
+		// User user = db.getFirebase().document("Users/" + userRegisterRequest.getUserName()).get().get().toObject(User.class);
+		User user = db.getFirebase().collection("User")
+		.document(userRegisterRequest.getUserName())
+		.get().get().toObject(User.class);
 		CollectionReference cr = db.getFirebase().collection("User");
 		ApiFuture<QuerySnapshot> querySnapShot = cr.get();
 		int phoneNumberCount=0;
@@ -108,7 +113,7 @@ public class UserController {
 		String hashedSecret = passwordEncoder.encode(userRegisterRequest.getSecretWord());
 		user.setSecretWord(hashedSecret);
 		db.getFirebase().document("User/" + user.getUserName()).set(user);
-		return "OK";
+		return user;
 	}
     @PostMapping(value = "/login")
 	@ApiOperation(value = "Login", response = String.class)

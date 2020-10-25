@@ -3,6 +3,7 @@ package com.mkl.mkltest.spring;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +15,7 @@ import com.google.firebase.FirebaseOptions;
 
 @Configuration
 public class FirebaseAppConfig {
+
 	@Bean
 	public FirebaseApp getFirebaseApp() throws IOException {
 
@@ -21,7 +23,7 @@ public class FirebaseAppConfig {
 		// 		.setCredentials((GoogleCredentials.fromStream(inputStream))).build();
 		// if(FirebaseApp.getApps().size()==0)
 		// FirebaseApp.initializeApp(options);
-		InputStream serviceAccount = this.getClass().getClassLoader().getResourceAsStream("./test-mkl-280615-firebase-adminsdk-l02h7-895a64421a.json");
+		InputStream serviceAccount = this.getClass().getClassLoader().getResourceAsStream("test-mkl-280615-firebase-adminsdk-l02h7-895a64421a.json");
 
 		FirebaseOptions options = new FirebaseOptions.Builder()
 		.setCredentials(GoogleCredentials.fromStream(serviceAccount))
