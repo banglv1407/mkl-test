@@ -32,7 +32,6 @@ import org.apache.http.HttpStatus;
  */
 public class StaticMethod {
     // DECLARE NEEDED PARAMETER FOR CreatePinMapImage method.
-    final static String bucket = "dobody-anvui.appspot.com";
     /**
      * Creates the image.
      *

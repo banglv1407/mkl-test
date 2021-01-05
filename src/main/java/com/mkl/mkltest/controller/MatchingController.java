@@ -34,13 +34,13 @@ public class MatchingController {
         try {
             List<BuyOrder> listBuyer = new ArrayList<BuyOrder>();
             List<Goods> listGoods = new ArrayList<Goods>();
-            CollectionReference crBuy = db.getFirebase().collection("Transaction/BuyOrder/" + session);
+            CollectionReference crBuy = db.getFirestore().collection("Transaction/BuyOrder/" + session);
             ApiFuture<QuerySnapshot> BuyerQuerySnapShot = crBuy.get();
             for(DocumentSnapshot doc : BuyerQuerySnapShot.get().getDocuments()){
                 BuyOrder bo = doc.toObject(BuyOrder.class);
                 listBuyer.add(bo);
             }
-                CollectionReference crGood = db.getFirebase().collection("Transaction/Goods/" + session);
+                CollectionReference crGood = db.getFirestore().collection("Transaction/Goods/" + session);
                 ApiFuture<QuerySnapshot> GoodQuerySnapShot = crGood.get();
                 for(DocumentSnapshot doc : GoodQuerySnapShot.get().getDocuments()){
                     Goods go = doc.toObject(Goods.class);

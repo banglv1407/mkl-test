@@ -46,7 +46,7 @@ public class OrderController {
         // CollectionReference cr = db.getFirebase().collection("Transaction");
         // ApiFuture<QuerySnapshot> querySnapShot = cr.get();
         // BuyOrder buyOrder = db.getFirebase().document("Transaction/BuyOrder/P1" + user.getUserName()).get().get().toObject(BuyOrder.class);
-        User user = db.getFirebase().document("User/" + username).get().get().toObject(User.class);
+        User user = db.getFirestore().document("User/" + username).get().get().toObject(User.class);
         BuyOrder buyOrder = new BuyOrder();
         buyOrder.setSession(buyOrderRequest.getSession());
         buyOrder.setUser(user);
@@ -55,7 +55,7 @@ public class OrderController {
         buyOrder.setId(user.getUserName()+"_"+ buyOrder.getCreateDateInt());
         try {
             // db.getFirebase().document("User/" + user.getUserName()).set(user);
-            DocumentReference df = db.getFirebase().document("Transaction/BuyOrder/"+ buyOrderRequest.getSession() + "/" + buyOrder.getUser().getUserName());
+            DocumentReference df = db.getFirestore().document("Transaction/BuyOrder/"+ buyOrderRequest.getSession() + "/" + buyOrder.getUser().getUserName());
             df.set(buyOrder);
         } catch (Exception e) {
             return e.getMessage();

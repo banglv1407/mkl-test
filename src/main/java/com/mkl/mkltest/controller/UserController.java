@@ -52,7 +52,7 @@ public class UserController {
     @GetMapping(value = "/getAllUser")
     public List<User> getAllUser() throws InterruptedException, ExecutionException {
         List<User> lUsers = new ArrayList<User>();
-        CollectionReference cr = db.getFirebase().collection("User");
+        CollectionReference cr = db.getFirestore().collection("User");
         ApiFuture<QuerySnapshot> querySnapShot = cr.get();
         for(DocumentSnapshot doc : querySnapShot.get().getDocuments()){
             User user = doc.toObject(User.class);
@@ -63,15 +63,18 @@ public class UserController {
     @PostMapping(value = "/getUser")
     public User getAllUser(@RequestBody User userReq) throws InterruptedException, ExecutionException {
         // User user = db.getFirebase().collection("User").document(id).get().get().toObject(User.class);
-        CollectionReference cr = db.getFirebase().collection("User");
+        CollectionReference cr = db.getFirestore().collection("User");
         
         User user = cr.document(userReq.getUserName()).get().get().toObject(User.class);
 		return user;
     }
 	@PostMapping(value = "/register")
-	public String register(@RequestBody UserRegister userRegisterRequest) throws InterruptedException, ExecutionException {
-		User user = db.getFirebase().document("Users/" + userRegisterRequest.getUserName()).get().get().toObject(User.class);
-		CollectionReference cr = db.getFirebase().collection("User");
+	public User register(@RequestBody UserRegister userRegisterRequest) throws InterruptedException, ExecutionException {
+		// User user = db.getFirebase().document("Users/" + userRegisterRequest.getUserName()).get().get().toObject(User.class);
+		User user = db.getFirestore().collection("User")
+								.document(userRegisterRequest.getUserName())
+								.get().get().toObject(User.class);
+		CollectionReference cr = db.getFirestore().collection("User");
 		ApiFuture<QuerySnapshot> querySnapShot = cr.get();
 		int phoneNumberCount=0;
 		for(DocumentSnapshot doc : querySnapShot.get().getDocuments()){
@@ -107,14 +110,14 @@ public class UserController {
 		user.setPassword(hashedPassword);
 		String hashedSecret = passwordEncoder.encode(userRegisterRequest.getSecretWord());
 		user.setSecretWord(hashedSecret);
-		db.getFirebase().document("User/" + user.getUserName()).set(user);
-		return "OK";
+		db.getFirestore().document("User/" + user.getUserName()).set(user);
+		return user;
 	}
     @PostMapping(value = "/login")
 	@ApiOperation(value = "Login", response = String.class)
 	public String login(@RequestBody UserLogin userLoginRequest) throws InterruptedException, ExecutionException {
 		
-		User user = db.getFirebase().collection("User")
+		User user = db.getFirestore().collection("User")
 								.document(userLoginRequest.getUsername())
 								.get().get().toObject(User.class);
 		

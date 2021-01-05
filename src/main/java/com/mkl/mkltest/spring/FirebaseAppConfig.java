@@ -14,7 +14,7 @@ import com.google.firebase.FirebaseOptions;
 
 @Configuration
 public class FirebaseAppConfig {
-	@Bean
+	// @Bean
 	public FirebaseApp getFirebaseApp() throws IOException {
 
 		// FirebaseOptions options = new FirebaseOptions.Builder()
@@ -33,7 +33,7 @@ public class FirebaseAppConfig {
 		
 		return FirebaseApp.getInstance();
 	}
-	public Firestore getFirebase() {
+	public Firestore getFirestore() {
 		return FirestoreClient.getFirestore();
 	}
 }
