@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.DocumentChange;
 import com.google.cloud.firestore.EventListener;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
@@ -48,17 +49,30 @@ public class FirebaseAppConfig {
 		.whereEqualTo("userName", "lebang1")
 		.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value,
+            public void onEvent(@Nullable QuerySnapshot snapshots,
                                 @Nullable FirestoreException e) {
                 if (e != null) {
                     // Log.w(TAG, "Listen failed.", e);
                     return;
-                }
-                for (QueryDocumentSnapshot doc : value) {
-                    if (doc.get("bankAccountNumber") != null) {
-                        System.out.println(doc.get("userName") + ":" + doc.get("fullName"));
+				}
+				for (DocumentChange doc : snapshots.getDocumentChanges()) {
+                    switch (doc.getType()) {
+                        case ADDED:
+							System.out.println("add" + doc.getDocument().get("userName") + ":" + doc.getDocument().get("fullName"));
+                            break;
+                        case MODIFIED:
+							System.out.println("update " + doc.getDocument().get("userName") + ":" + doc.getDocument().get("fullName"));
+                            break;
+                        case REMOVED:
+							System.out.println("delete" + doc.getDocument().get("userName") + ":" + doc.getDocument().get("fullName"));
+                            break;
                     }
                 }
+                // for (QueryDocumentSnapshot doc : snapshots) {
+                //     if (doc.get("bankAccountNumber") != null) {
+                //         System.out.println(doc.get("userName") + ":" + doc.get("fullName"));
+                //     }
+                // }
                 // Log.d(TAG, "Current cites in CA: " + cities);
             }
         });
