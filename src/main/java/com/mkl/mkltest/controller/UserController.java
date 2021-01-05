@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -25,8 +27,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.EventListener;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.FirestoreException;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,84 +49,132 @@ import com.mkl.mkltest.utility.CommonMethod;
 import com.mkl.mkltest.utility.UtilitiesMethod;
 
 @RestController
-@RequestMapping(path = "/user") 
+@RequestMapping(path = "/user")
 public class UserController {
 	@Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    FirebaseAppConfig db;
-    @GetMapping(value = "/getAllUser")
-    public List<User> getAllUser() throws InterruptedException, ExecutionException {
-        List<User> lUsers = new ArrayList<User>();
-        CollectionReference cr = db.getFirestore().collection("User");
-        ApiFuture<QuerySnapshot> querySnapShot = cr.get();
-        for(DocumentSnapshot doc : querySnapShot.get().getDocuments()){
-            User user = doc.toObject(User.class);
-            lUsers.add(user);
-        }
-		return lUsers;
-    }
-    @PostMapping(value = "/getUser")
-    public User getAllUser(@RequestBody User userReq) throws InterruptedException, ExecutionException {
-        // User user = db.getFirebase().collection("User").document(id).get().get().toObject(User.class);
-        CollectionReference cr = db.getFirestore().collection("User");
-        
-        User user = cr.document(userReq.getUserName()).get().get().toObject(User.class);
-		return user;
-    }
-	@PostMapping(value = "/register")
-	public User register(@RequestBody UserRegister userRegisterRequest) throws InterruptedException, ExecutionException {
-		// User user = db.getFirebase().document("Users/" + userRegisterRequest.getUserName()).get().get().toObject(User.class);
-		User user = db.getFirestore().collection("User")
-								.document(userRegisterRequest.getUserName())
-								.get().get().toObject(User.class);
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	FirebaseAppConfig db;
+
+	@GetMapping(value = "/getAllUser")
+	public List<User> getAllUser() throws InterruptedException, ExecutionException {
+		List<User> lUsers = new ArrayList<User>();
 		CollectionReference cr = db.getFirestore().collection("User");
 		ApiFuture<QuerySnapshot> querySnapShot = cr.get();
-		int phoneNumberCount=0;
-		for(DocumentSnapshot doc : querySnapShot.get().getDocuments()){
+		for (DocumentSnapshot doc : querySnapShot.get().getDocuments()) {
+			User user = doc.toObject(User.class);
+			lUsers.add(user);
+		}
+		db.getFirestore().collection("User")
+		.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value,
+                                @Nullable FirestoreException e) {
+                if (e != null) {
+                    // Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                List<String> cities = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : value) {
+                    if (doc.get("bankAccountNumber") != null) {
+                        System.out.println(doc.get("userName") + ":" + doc.get("fullName"));
+                    }
+                }
+                // Log.d(TAG, "Current cites in CA: " + cities);
+            }
+        });
+
+		return lUsers;
+	}
+
+	@PostMapping(value = "/getUser")
+	public User getAllUser(@RequestBody User userReq) throws InterruptedException, ExecutionException {
+		// User user =
+		// db.getFirebase().collection("User").document(id).get().get().toObject(User.class);
+		CollectionReference cr = db.getFirestore().collection("User");
+
+		User user = cr.document(userReq.getUserName()).get().get().toObject(User.class);
+		return user;
+	}
+
+	@PostMapping(value = "/register")
+	public User register(@RequestBody UserRegister userRegisterRequest)
+			throws InterruptedException, ExecutionException {
+		// User user = db.getFirebase().document("Users/" +
+		// userRegisterRequest.getUserName()).get().get().toObject(User.class);
+		User user = db.getFirestore().collection("User").document(userRegisterRequest.getUserName()).get().get()
+				.toObject(User.class);
+		CollectionReference cr = db.getFirestore().collection("User");
+		ApiFuture<QuerySnapshot> querySnapShot = cr.get();
+		int phoneNumberCount = 0;
+		for (DocumentSnapshot doc : querySnapShot.get().getDocuments()) {
 			User eachUser = doc.toObject(User.class);
-			if (eachUser.getPhoneNumber().equalsIgnoreCase(userRegisterRequest.getPhoneNumber())){
+			if (eachUser.getPhoneNumber().equalsIgnoreCase(userRegisterRequest.getPhoneNumber())) {
 				phoneNumberCount++;
 			}
 		}
-		if (phoneNumberCount>1){
-			throw new ResponseStatusException(HttpStatus.CONFLICT, userRegisterRequest.getPhoneNumber() + " limit account ");
+		if (phoneNumberCount > 1) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					userRegisterRequest.getPhoneNumber() + " limit account ");
 		}
 		if (user != null) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, userRegisterRequest.getUserName() + " already exists ");
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					userRegisterRequest.getUserName() + " already exists ");
 		}
-        if (userRegisterRequest.getUserName().length()<0 &&  userRegisterRequest.getUserName().isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "UserName null");
+		if (userRegisterRequest.getUserName().length() < 0 && userRegisterRequest.getUserName().isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "UserName null");
 		}
-		if (userRegisterRequest.getPhoneNumber().length()<0 &&  userRegisterRequest.getUserName().isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "UserName null");
+		if (userRegisterRequest.getPhoneNumber().length() < 0 && userRegisterRequest.getUserName().isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "UserName null");
 		}
 		user = new User();
 		user.setPhoneNumber(userRegisterRequest.getPhoneNumber());
 		user.setBirthDay(userRegisterRequest.getBirthDay());
-        user.setId(userRegisterRequest.getUserName()+System.currentTimeMillis()); 
-        user.setUserName(userRegisterRequest.getUserName());
-        user.setFullName(userRegisterRequest.getFullName());
+		user.setId(userRegisterRequest.getUserName() + System.currentTimeMillis());
+		user.setUserName(userRegisterRequest.getUserName());
+		user.setFullName(userRegisterRequest.getFullName());
 		user.setZalo(userRegisterRequest.getZalo());
 		user.setBankCode(userRegisterRequest.getBankCode());
 		user.setBankAccountNumber(userRegisterRequest.getBankAccountNumber());
 		user.setBirthDayInt(CommonMethod.getSimpleDayToInt(userRegisterRequest.getBirthDay()));
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String hashedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String hashedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
 		user.setPassword(hashedPassword);
 		String hashedSecret = passwordEncoder.encode(userRegisterRequest.getSecretWord());
 		user.setSecretWord(hashedSecret);
 		db.getFirestore().document("User/" + user.getUserName()).set(user);
 		return user;
 	}
-    @PostMapping(value = "/login")
+
+	@PostMapping(value = "/login")
 	@ApiOperation(value = "Login", response = String.class)
 	public String login(@RequestBody UserLogin userLoginRequest) throws InterruptedException, ExecutionException {
-		
+		// final DocumentReference docRef = db.getFirestore().collection("User").document(userLoginRequest.getUsername());
+		// docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+		// 	@Override
+		// 	public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirestoreException e) {
+		// 		if (e != null) {
+		// 			System.out.println(e);
+		// 			return;
+		// 		}
+
+		// 		// String source = snapshot != null && snapshot.getData().hasPendingWrites() ?
+		// 		// "Local" : "Server";
+
+		// 		if (snapshot != null && snapshot.exists()) {
+		// 			System.out.println("user vua thay doi:" + snapshot.getData());
+		// 			// Log.d(TAG, source + " data: " + snapshot.getData());
+		// 		} else {
+		// 			System.out.println("null");
+		// 		}
+		// 		System.out.println(snapshot.getData());
+		// 	}
+		// });
+
 		User user = db.getFirestore().collection("User")
-								.document(userLoginRequest.getUsername())
-								.get().get().toObject(User.class);
-		
+				.document(userLoginRequest.getUsername())
+				.get().get().toObject(User.class);
 		if (user == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, userLoginRequest.getUsername() + " not exists");
 		}
