@@ -14,6 +14,10 @@ public class User {
     private int rice;
     private String secretWord;
     private boolean isActive;
+    private Double totalAmountCharge = 0d;
+    private Double totalAmountBet = 0d;
+    private Double totalAmountWin = 0d;
+    private Double currentAmount = 0d;
     public String getId() {
         return id;
     }
@@ -116,5 +120,37 @@ public class User {
 
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public Double getTotalAmountCharge() {
+        return totalAmountCharge;
+    }
+
+    public void setTotalAmountCharge(Double totalAmountCharge) {
+        this.totalAmountCharge = totalAmountCharge;
+    }
+
+    public Double getTotalAmountWin() {
+        return totalAmountWin;
+    }
+
+    public void setTotalAmountWin(Double totalAmountWin) {
+        this.totalAmountWin = totalAmountWin;
+    }
+
+    public Double getTotalAmountBet() {
+        return totalAmountBet;
+    }
+
+    public void setTotalAmountBet(Double totalAmountBet) {
+        this.totalAmountBet = totalAmountBet;
+    }
+
+    public Double getCurrentAmount() {
+        return currentAmount;
+    }
+
+    public void setCurrentAmount(Double currentAmount) {
+        this.currentAmount = currentAmount;
     }
 }

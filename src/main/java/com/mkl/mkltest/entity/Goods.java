@@ -1,8 +1,8 @@
 package com.mkl.mkltest.entity;
 
 public class Goods {
-    private String session;
     private String id;
+    private String session;
     private String ownerUserName;
     private String ownerBankAccount;
     private long value;
