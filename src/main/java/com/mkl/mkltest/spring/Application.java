@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -17,8 +18,10 @@ import nz.net.ultraq.thymeleaf.LayoutDialect;
 @ComponentScan("com.mkl.mkltest.controller")
 @ComponentScan("com.mkl.mkltest.spring")
 @ComponentScan("com.mkl.mkltest.streamer")
+@ComponentScan("com.mkl.mkltest.cron")
 @EntityScan("com.mkl.mkltest.entity")
 @ComponentScan("com.fsc")
+@EnableScheduling
 public class Application {
 
 	public static void main(String[] args) {

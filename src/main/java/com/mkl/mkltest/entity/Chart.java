@@ -1,7 +1,7 @@
 package com.mkl.mkltest.entity;
 
 public class Chart {
-    private String id;
+    private Long id;
     private Long openTime;
     private Double openPrice;
     private Double highPrice;
@@ -10,13 +10,6 @@ public class Chart {
     private Long closeTime;
     private Integer chartType;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public Long getOpenTime() {
         return openTime;
@@ -72,6 +65,14 @@ public class Chart {
 
     public void setChartType(Integer chartType) {
         this.chartType = chartType;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
     
     

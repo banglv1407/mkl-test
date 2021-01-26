@@ -43,9 +43,6 @@ public class OrderController {
     @PostMapping(value = "/buy")
     public String p1Matching(@RequestBody BuyOrderRequest buyOrderRequest) throws InterruptedException, ExecutionException {
         String username = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
-        // CollectionReference cr = db.getFirebase().collection("Transaction");
-        // ApiFuture<QuerySnapshot> querySnapShot = cr.get();
-        // BuyOrder buyOrder = db.getFirebase().document("Transaction/BuyOrder/P1" + user.getUserName()).get().get().toObject(BuyOrder.class);
         User user = db.getFirebase().document("User/" + username).get().get().toObject(User.class);
         BuyOrder buyOrder = new BuyOrder();
         buyOrder.setSession(buyOrderRequest.getSession());

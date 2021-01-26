@@ -48,6 +48,7 @@ import org.apache.http.HttpStatus;
  * @Detail : The CommonMethod class.
  **/
 public class CommonMethod {
+    public static long COMMON_ID = System.currentTimeMillis()/60000 * 60000 + 60000;
     static Logger log = Logger.getLogger(CommonMethod.class.getSimpleName());
 
     /**
