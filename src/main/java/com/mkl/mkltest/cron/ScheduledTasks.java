@@ -40,8 +40,8 @@ public class ScheduledTasks {
     @Scheduled(cron = "1 * * * * ?")
     public void listenTransaction() {
         Long cid = System.currentTimeMillis()/60000 * 60000 + 60000;
-		db.getFirebase().collection("Transaction/BetLog/"+ cid)
-		// .whereEqualTo("chartId", CommonMethod.COMMON_ID)
+		db.getFirebase().collection("System/"+ cid + "/BetLog")
+		// .whereEqualTo("chartId", cid)
 				.addSnapshotListener(new EventListener<QuerySnapshot>() {
 
 					@Override
@@ -50,37 +50,33 @@ public class ScheduledTasks {
 							// Log.w(TAG, "Listen failed.", e);
 							return;
                         }
-                        DocumentReference autoGenSummary = db.getFirebase().document("Transaction/Summary");
-						Summary summary = new Summary();
-						// try {
-						// 	summary = autoGenSummary.get().get().toObject(Summary.class);
-						// } catch (InterruptedException e1) {
-						// 	// TODO Auto-generated catch block
-						// 	e1.printStackTrace();
-						// } catch (ExecutionException e1) {
-						// 	// TODO Auto-generated catch block
-						// 	e1.printStackTrace();
-						// }
-				summary.setId(cid);
-				summary.setChartId(CommonMethod.COMMON_ID);
-				Double totalBetDown = summary.getTotalBetDownAmount();
-				Double totalBetUp = summary.getTotalBetUpAmount();
-				// if (summary == null) {
-					// summary = new Summary();
-				// }
-				for (DocumentChange doc : snapshots.getDocumentChanges()) {
-					System.out.println("current bet " + doc.getDocument().get("betDownAmount") + ":" + doc.getDocument().get("betUpAmout"));
-					summary.setTotalBetDownAmount(totalBetDown + Double.parseDouble(doc.getDocument().get("betDownAmount").toString()));
-					summary.setTotalBetUpAmount(totalBetUp + Double.parseDouble(doc.getDocument().get("betUpAmout").toString()));
-					System.out.println("total bet " + summary.getTotalBetDownAmount() + ":" + summary.getTotalBetUpAmount());
-				}
-				autoGenSummary.set(summary);
+                        DocumentReference dfSummary = db.getFirebase().document("System/"+cid+"/Summary/AllSystem");
+						
+						try {
+                            Summary summary = dfSummary.get().get().toObject(Summary.class);
+                            Double totalBetDown = summary.getTotalBetDownAmount();
+                            Double totalBetUp = summary.getTotalBetUpAmount();
+                            for (DocumentChange doc : snapshots.getDocumentChanges()) {
+                                System.out.println("current bet " + doc.getDocument().get("betDownAmount") + ":" + doc.getDocument().get("betUpAmout"));
+                                summary.setTotalBetDownAmount(totalBetDown + Double.parseDouble(doc.getDocument().get("betDownAmount").toString()));
+                                summary.setTotalBetUpAmount(totalBetUp + Double.parseDouble(doc.getDocument().get("betUpAmout").toString()));
+                                System.out.println("total bet " + summary.getTotalBetDownAmount() + ":" + summary.getTotalBetUpAmount());
+                            }
+                            dfSummary.set(summary);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (ExecutionException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+
             }
         });
     }
 
     // @Scheduled(cron = "1 * 0 ? * * *")
-    @Scheduled(cron = "15 * * * * ?")
+    @Scheduled(cron = "0 * * * * ?")
     public void autoGenChart() throws IOException {
         final String urlReq = "https://api1.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1";
         Long cid = System.currentTimeMillis()/60000 * 60000 + 60000;
@@ -124,9 +120,16 @@ public class ScheduledTasks {
         // responseTodoObject.numberOfTrades = Long.parseLong(responseTodoArray[8]);
         // responseTodoObject.buyBaseAssetVolume = Double.parseDouble(responseTodoArray[9].substring(1, responseTodoArray[9].length() - 1));
         // responseTodoObject.buyQuoteAssetVolumer = Double.parseDouble(responseTodoArray[10].substring(1, responseTodoArray[10].length() - 1));
+
+        Summary summary = new Summary();
+        summary.setId(cid);
+        summary.setChartId(cid);
         try {
-            DocumentReference df = db.getFirebase().document("Chart/"+ chart.getId());
+            String typeChart = chart.getChartType() == 1 ? "Current" : "Balance";
+            DocumentReference df = db.getFirebase().document("System/"+ cid + "/Chart/" + typeChart);
             df.set(chart);
+            DocumentReference autoGenSummary = db.getFirebase().document("System/"+cid+"/Summary/AllSystem");
+            autoGenSummary.set(summary);
         } catch (Exception e) {
             e.printStackTrace();
         }

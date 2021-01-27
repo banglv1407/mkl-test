@@ -1,7 +1,7 @@
 package com.mkl.mkltest.entity;
 
 public class BetLog {
-    private Long id;
+    private String id;
     private String userId;
     private Double betDownAmount;
     private Double betUpAmout;
@@ -41,20 +41,20 @@ public class BetLog {
         this.createdDate = createdDate;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getChartId() {
         return chartId;
     }
 
     public void setChartId(Long chartId) {
         this.chartId = chartId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
     
 }

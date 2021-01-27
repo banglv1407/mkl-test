@@ -58,7 +58,7 @@ public class ChartController {
         betLog.setUserId(user.getId());
         
         try {
-            DocumentReference df = db.getFirebase().document("Transaction/BetLog/"+ betReq.getChartId() + "/" + username);
+            DocumentReference df = db.getFirebase().document("System/BetLog/"+ betReq.getChartId() + "/" + username);
             df.set(betLog);
         } catch (Exception e) {
             e.printStackTrace();

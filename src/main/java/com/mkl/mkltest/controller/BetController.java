@@ -44,6 +44,7 @@ public class BetController {
 
     @PostMapping(value = "/bet")
     public BetLog bet(@RequestBody BetLog betReq) throws InterruptedException, ExecutionException {
+        Long cid = System.currentTimeMillis()/60000 * 60000 + 60000;
         String username = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
         // CollectionReference cr = db.getFirebase().collection("Transaction");
         // ApiFuture<QuerySnapshot> querySnapShot = cr.get();
@@ -57,12 +58,12 @@ public class BetController {
         betLog.setCreatedDate(System.currentTimeMillis());
         betLog.setBetDownAmount(betReq.getBetDownAmount());
         betLog.setBetUpAmout(betReq.getBetUpAmout());
-        betLog.setChartId(betReq.getChartId());
-        betLog.setId(betReq.getId());
+        betLog.setChartId(cid);
+        betLog.setId(user.getId() + String.valueOf(cid));
         betLog.setUserId(user.getId());
         
         try {
-            DocumentReference df = db.getFirebase().document("Transaction/BetLog/"+ betReq.getChartId() + "/" + username);
+            DocumentReference df = db.getFirebase().document("System/"+ cid + "/BetLog/" + username+System.currentTimeMillis());
             df.set(betLog);
         } catch (Exception e) {
             e.printStackTrace();
